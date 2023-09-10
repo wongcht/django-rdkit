@@ -9,51 +9,46 @@ env:
 
 
 jobs:
-    build_conda:
-        runs-on: ubuntu-latest
+  container-job:
+    runs-on: ubuntu-latest
+    container: python:${{matrix.python-version}}-bullseye
+    strategy:
+      matrix:
+          include:
+              - python-version: "3.11"
+                django-version: "4.2"
+                postgresql-version: "15"
+                rdkit-version: "2023_03_3"
 
-        strategy:
-            matrix:
-                include:
-                    - python-version: "3.11"
-                      django-version: "4.2"
+    steps:
+      - uses: actions/checkout@v4
 
-        steps:
-            - uses: actions/checkout@v4
+      - name: Prepare postgresql and rdkit
+        run: |
+          sudo apt-get update
+          sudo apt install postgresql libboost-all-dev
+          wget https://github.com/rdkit/rdkit/archive/Release_${{matrix.rdkit-version}}.tar.gz
+          tar -xf Release_${{matrix.rdkit-version}}.tar.gz
+          cd Release_${{matrix.rdkit-version}}
+          mkdir build
+          cd build
+          cmake .. -D RDK_BUILD_PGSQL=ON \
+          -D PostgreSQL_CONFIG_DIR=/usr/lib/postgresql/15/bin \
+          -D PostgreSQL_INCLUDE_DIR="/usr/include/postgresql" \
+          -D PostgreSQL_TYPE_INCLUDE_DIR="/usr/include/postgresql/15/server" \
+          -D PostgreSQL_LIBRARY="/usr/lib/x86_64-linux-gnu/libpq.so"
+          make
+          make install
+          sudo systemctl start postgresql
 
-            - name: Setup Mambaforge
-              uses: conda-incubator/setup-miniconda@v2
-              with:
-                python-version: ${{matrix.python-version}}
-                miniforge-variant: Mambaforge
-                miniforge-version: latest
-                activate-environment: my-env
-                use-mamba: true
-            
-            - name: Install constant packages
-              run: conda install -q -c rdkit rdkit rdkit-postgresql
+      - name: Install constant packages
+        run: pip install rdkit psycopg2-binary
+      
+      - name: Install variate packages
+        run: |
+          pip install django~=${{matrix.django-version}}
+          python setup.py develop
 
-            - name: Set cache date
-              run: echo "DATE=$(date +'%Y%m%d')" >> $GITHUB_ENV
-
-            - uses: actions/cache@v3
-              with:
-                path: /usr/share/miniconda3/envs/my-env
-                key: ubuntu-conda-${{ env.DATE }}-${{ env.CACHE_NUMBER }}
-              id: cache
-            
-            - name: Install variate packages
-              run:
-                conda install -q django~=${{matrix.django-version}} psycopg2
-                python setup.py develop
-            
-            - name: Before tests
-              run: |
-                initdb
-                echo "shared_preload_libraries = 'rdkit'" >> $PGDATA/postgresql.conf
-                pg_ctl start -l $PGDATA/log.txt
-                sleep 5 # just make sure that postgres startup has completed
-
-            - name: Run tests
-              shell: bash -l {0}
-              run: python ./runtests.py
+      - name: Run tests
+        shell: bash -l {0}
+        run: python ./runtests.py
