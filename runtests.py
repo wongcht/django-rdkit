@@ -16,7 +16,7 @@ DEFAULT_SETTINGS = dict(
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'NAME': os.environ.get('DJANGO_DB', 'test'),
             'USER': os.environ.get('DJANGO_USER', 'postgres'),
-            'PASSWORD': os.environ.get('DJANGO_PASSWORD', 'admin'),
+            'PASSWORD': os.environ.get('DJANGO_PASSWORD', 'postgres'),
             'HOST': os.environ.get('DATABASE_HOST', ''),
             'PORT': os.environ.get('DATABASE_PORT', ''),
         }

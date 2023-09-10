@@ -17,30 +17,26 @@ jobs:
           include:
               - python-version: "3.11"
                 django-version: "4.2"
-                postgresql-version: "15"
-                rdkit-version: "2023_03_3"
+
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: mcs07/postgres-rdkit
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Prepare postgresql and rdkit
-        run: |
-          pip install numpy
-          apt-get update
-          apt install -y postgresql cmake libboost-all-dev
-          wget https://github.com/rdkit/rdkit/archive/Release_${{matrix.rdkit-version}}.tar.gz
-          tar -xf Release_${{matrix.rdkit-version}}.tar.gz
-          cd rdkit-Release_${{matrix.rdkit-version}}
-          mkdir build
-          cd build
-          cmake .. -D RDK_BUILD_PGSQL=ON \
-          -D PostgreSQL_CONFIG_DIR=/usr/lib/postgresql/13/bin \
-          -D PostgreSQL_INCLUDE_DIR="/usr/include/postgresql" \
-          -D PostgreSQL_TYPE_INCLUDE_DIR="/usr/include/postgresql/13/server" \
-          -D PostgreSQL_LIBRARY="/usr/lib/x86_64-linux-gnu/libpq.so"
-          make
-          make install
-          systemctl start postgresql
 
       - name: Install constant packages
         run: pip install rdkit psycopg2-binary
