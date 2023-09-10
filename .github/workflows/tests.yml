@@ -43,3 +43,7 @@ jobs:
       - name: Run tests
         shell: bash -l {0}
         run: python ./runtests.py
+        env:
+          DJANGO_PASSWORD: postgres
+          DATABASE_HOST: localhost
+          DATABASE_PORT: 5432
