@@ -8,6 +8,7 @@ jobs:
     container: python:${{matrix.python-version}}-bullseye
     strategy:
       matrix:
+        psycopg-package: ["psycopg2-binary", "psycopg[binary]"]
           include:
               - python-version: "3.11"
                 django-version: "4.2"
@@ -37,7 +38,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install constant packages
-        run: pip install rdkit==${{matrix.rdkit-python-version}} psycopg2-binary
+        run: pip install rdkit==${{matrix.rdkit-python-version}} ${{matrix.psycopg-package}}
       
       - name: Install variate packages
         run: |
