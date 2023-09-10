@@ -25,7 +25,7 @@ jobs:
 
       - name: Prepare postgresql and rdkit
         run: |
-          apt-get update
+          apt-get update -y
           apt install postgresql libboost-all-dev
           wget https://github.com/rdkit/rdkit/archive/Release_${{matrix.rdkit-version}}.tar.gz
           tar -xf Release_${{matrix.rdkit-version}}.tar.gz
