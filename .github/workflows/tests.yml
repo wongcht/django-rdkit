@@ -25,8 +25,8 @@ jobs:
 
       - name: Prepare postgresql and rdkit
         run: |
-          sudo apt-get update
-          sudo apt install postgresql libboost-all-dev
+          apt-get update
+          apt install postgresql libboost-all-dev
           wget https://github.com/rdkit/rdkit/archive/Release_${{matrix.rdkit-version}}.tar.gz
           tar -xf Release_${{matrix.rdkit-version}}.tar.gz
           cd Release_${{matrix.rdkit-version}}
@@ -39,7 +39,7 @@ jobs:
           -D PostgreSQL_LIBRARY="/usr/lib/x86_64-linux-gnu/libpq.so"
           make
           make install
-          sudo systemctl start postgresql
+          systemctl start postgresql
 
       - name: Install constant packages
         run: pip install rdkit psycopg2-binary
