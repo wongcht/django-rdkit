@@ -25,6 +25,7 @@ jobs:
 
       - name: Prepare postgresql and rdkit
         run: |
+          pip install numpy
           apt-get update
           apt install -y postgresql cmake libboost-all-dev
           wget https://github.com/rdkit/rdkit/archive/Release_${{matrix.rdkit-version}}.tar.gz
