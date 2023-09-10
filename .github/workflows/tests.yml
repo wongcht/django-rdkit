@@ -29,13 +29,13 @@ jobs:
           apt install -y postgresql libboost-all-dev
           wget https://github.com/rdkit/rdkit/archive/Release_${{matrix.rdkit-version}}.tar.gz
           tar -xf Release_${{matrix.rdkit-version}}.tar.gz
-          cd Release_${{matrix.rdkit-version}}
+          cd rdkit-Release_${{matrix.rdkit-version}}
           mkdir build
           cd build
           cmake .. -D RDK_BUILD_PGSQL=ON \
-          -D PostgreSQL_CONFIG_DIR=/usr/lib/postgresql/15/bin \
+          -D PostgreSQL_CONFIG_DIR=/usr/lib/postgresql/13/bin \
           -D PostgreSQL_INCLUDE_DIR="/usr/include/postgresql" \
-          -D PostgreSQL_TYPE_INCLUDE_DIR="/usr/include/postgresql/15/server" \
+          -D PostgreSQL_TYPE_INCLUDE_DIR="/usr/include/postgresql/13/server" \
           -D PostgreSQL_LIBRARY="/usr/lib/x86_64-linux-gnu/libpq.so"
           make
           make install
