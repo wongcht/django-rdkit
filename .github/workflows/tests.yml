@@ -9,11 +9,11 @@ jobs:
     strategy:
       matrix:
         psycopg-package: ["psycopg2-binary", "psycopg[binary]"]
-          include:
-              - python-version: "3.11"
-                django-version: "4.2"
-                rdkit-cartridge-version: "2023_03_2"
-                rdkit-python-version: "2023.3.2"
+        include:
+            - python-version: "3.11"
+              django-version: "4.2"
+              rdkit-cartridge-version: "2023_03_2"
+              rdkit-python-version: "2023.3.2"
 
     services:
       # Label used to access the service container
