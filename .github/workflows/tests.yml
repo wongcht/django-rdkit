@@ -11,15 +11,19 @@ jobs:
           include:
               - python-version: "3.11"
                 django-version: "4.2"
+                rdkit-cartridge-version: "2023_03_2"
+                rdkit-python-version: "2023.3.2"
 
     services:
       # Label used to access the service container
       postgres:
         # Docker Hub image
-        image: mcs07/postgres-rdkit
+        image: informaticsmatters/rdkit-cartridge-debian:Release_${{matrix.rdkit-cartridge-version}}
         # Provide the password for postgres
         env:
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
@@ -33,7 +37,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install constant packages
-        run: pip install rdkit psycopg2-binary
+        run: pip install rdkit==${{matrix.rdkit-python-version}} psycopg2-binary
       
       - name: Install variate packages
         run: |
@@ -44,6 +48,8 @@ jobs:
         shell: bash -l {0}
         run: python ./runtests.py
         env:
+          DJANGO_DB: test
+          DJANGO_USER: postgres
           DJANGO_PASSWORD: postgres
           DATABASE_HOST: localhost
           DATABASE_PORT: 5432
