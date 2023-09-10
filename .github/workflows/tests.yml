@@ -3,9 +3,9 @@ name: Tests
 on: push
 
 env:
-    - PGPORT: 54321
-    - PGDATA: $HOME/PGDATA
-    - CACHE_NUMBER: 0
+  PGPORT: 54321
+  PGDATA: $HOME/PGDATA
+  CACHE_NUMBER: 0
 
 
 jobs:
