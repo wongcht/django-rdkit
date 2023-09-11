@@ -11,25 +11,15 @@ jobs:
         rdkit-version: [
           {cartridge: "2023_03_2", python: "2023.3.2"}
         ]
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
         django-version: ["3.2", "4.1", "4.2"]
-        psycopg-package: ["psycopg2-binary"]
-        include:
+        psycopg-package: ["psycopg2-binary", "psycopg[binary]"]
+        exclude:
           - python-version: "3.11"
-            django-version: "4.1"
-          - python-version: "3.11"
-            django-version: "4.2"
-          - python-version: "3.8"
-            django-version: "4.2"
+            django-version: "3.2"
+          - django-version: "3.2"
             psycopg-package: "psycopg[binary]"
-          - python-version: "3.9"
-            django-version: "4.2"
-            psycopg-package: "psycopg[binary]"
-          - python-version: "3.10"
-            django-version: "4.2"
-            psycopg-package: "psycopg[binary]"
-          - python-version: "3.11"
-            django-version: "4.2"
+          - django-version: "4.1"
             psycopg-package: "psycopg[binary]"
 
     services:
