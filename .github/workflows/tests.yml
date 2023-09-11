@@ -3,7 +3,7 @@ name: Tests
 on: push
 
 jobs:
-  container-job:
+  Test:
     runs-on: ubuntu-latest
     container: python:${{matrix.python-version}}-bullseye
     strategy:
