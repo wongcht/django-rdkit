@@ -8,27 +8,24 @@ jobs:
     container: python:${{matrix.python-version}}-bullseye
     strategy:
       matrix:
-        rdkit-cartridge-version: ["2023_03_2"]
-        rdkit-python-version: ["2023.3.2"]
+        rdkit-version: [
+          {cartridge: "2023_03_2", python: "2023.3.2"}
+        ]
         python-version: ["3.8", "3.9", "3.10"]
         django-version: ["3.2", "4.1", "4.2"]
         psycopg-package: ["psycopg2-binary", "psycopg[binary]"]
         include:
           - python-version: "3.11"
             django-version: "4.1"
-            rdkit-cartridge-version: "2023_03_2"
-            rdkit-python-version: "2023.3.2"
           - python-version: "3.11"
             django-version: "4.2"
-            rdkit-cartridge-version: "2023_03_2"
-            rdkit-python-version: "2023.3.2"
 
 
     services:
       # Label used to access the service container
       postgres:
         # Docker Hub image
-        image: informaticsmatters/rdkit-cartridge-debian:Release_${{matrix.rdkit-cartridge-version}}
+        image: informaticsmatters/rdkit-cartridge-debian:Release_${{matrix.rdkit-version.cartridge}}
         # Provide the password for postgres
         env:
           POSTGRES_USER: postgres
@@ -48,7 +45,7 @@ jobs:
 
       - name: Install packages
         run: |
-          pip install django~=${{matrix.django-version}}.0 rdkit==${{matrix.rdkit-python-version}} ${{matrix.psycopg-package}}
+          pip install django~=${{matrix.django-version}}.0 rdkit==${{matrix.rdkit-version.python}} ${{matrix.psycopg-package}}
           python setup.py develop
 
       - name: Run tests
