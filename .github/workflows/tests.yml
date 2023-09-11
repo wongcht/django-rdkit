@@ -37,12 +37,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install constant packages
-        run: pip install rdkit==${{matrix.rdkit-python-version}} ${{matrix.psycopg-package}}
-      
-      - name: Install variate packages
+      - name: Install packages
         run: |
-          pip install django~=${{matrix.django-version}}
+          pip install django~=${{matrix.django-version}} rdkit==${{matrix.rdkit-python-version}} ${{matrix.psycopg-package}}
           python setup.py develop
 
       - name: Run tests
