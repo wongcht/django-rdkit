@@ -52,5 +52,7 @@ jobs:
           DJANGO_DB: test
           DJANGO_USER: postgres
           DJANGO_PASSWORD: postgres
+          # GitHub connects using bridge networks
+          # https://docs.github.com/en/actions/using-containerized-services/about-service-containers#running-jobs-in-a-container
           DATABASE_HOST: postgres
           DATABASE_PORT: 5432
